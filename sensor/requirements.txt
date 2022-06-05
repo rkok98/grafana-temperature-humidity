@@ -1,0 +1,9 @@
+cffi==1.15.0
+cryptography==37.0.2
+h11==0.13.0
+HAP-python==4.4.0
+ifaddr==0.1.7
+pigpio==1.78
+pycparser==2.21
+pytelegraf==0.3.3
+zeroconf==0.38.6

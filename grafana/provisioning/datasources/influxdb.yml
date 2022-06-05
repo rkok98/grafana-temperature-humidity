@@ -24,7 +24,7 @@ datasources:
   # <string> database user, if used
   user: "admin"
   # <string> database name, if used
-  database: "influx"
+  database: "sensors"
   # <bool> enable/disable basic auth
   basicAuth: false
 #  withCredentials:
