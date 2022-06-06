@@ -1,15 +1,23 @@
 version: '3.6'
 services:
+  sensor:
+    build: ./sensor
+    links:
+      - telegraf
+    ports:
+      - '0.0.0.0:51826:51826'
+    network_mode: "host"
+
   telegraf:
     image: telegraf:1.18-alpine
     volumes:
-    - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
       - influxdb
     links:
       - influxdb
     ports:
-    - '0.0.0.0:8125:8125/udp'
+      - '0.0.0.0:8125:8125/udp'
 
   influxdb:
     image: influxdb:1.8-alpine
@@ -37,5 +45,5 @@ services:
       - ./grafana/dashboards/:/var/lib/grafana/dashboards/
 
 volumes:
-  grafana_data: {}
-  influxdb_data: {}
+  grafana_data: { }
+  influxdb_data: { }

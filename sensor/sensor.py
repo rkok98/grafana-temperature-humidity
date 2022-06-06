@@ -50,18 +50,14 @@ class AM2302(Accessory):
         self.char_humidity.set_value(h)
 
 
-def get_accessory(driver):
-    """Call this method to get a standalone Accessory."""
-    return AM2302(driver, 'Temperature and Humidity Sensor')
-
-
 if __name__ == "__main__":
     # Start
-    client = TelegrafClient(host='localhost', port=8125)
+    client = TelegrafClient(host='0.0.0.0', port=8125)
 
     # Start the accessory on port 51826
     accessory_driver = AccessoryDriver(port=51826)
-    accessory_driver.add_accessory(accessory=get_accessory(accessory_driver))
+    climate_sensor = AM2302(accessory_driver, 'Temperature and Humidity Sensor')
+    accessory_driver.add_accessory(accessory=climate_sensor)
     signal.signal(signal.SIGTERM, accessory_driver.signal_handler)
 
     accessory_driver.start()
