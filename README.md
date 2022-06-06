@@ -1,4 +1,4 @@
-# Grafana Temperature & Humidity sensor streaming with Homekit, Telegraf, InfluxDB and Grafana
+# Climate sensor streaming with Homekit, Telegraf, InfluxDB and Grafana
 
 ## Start the stack with docker compose
 
