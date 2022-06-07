@@ -2,14 +2,17 @@ version: '3.6'
 services:
   sensor:
     build: ./sensor
-    links:
-      - telegraf
-    ports:
-      - '0.0.0.0:51826:51826'
     network_mode: "host"
+    privileged: true
+    devices:
+      - /dev/gpiochip0
+    volumes:
+      - ./sensor/start.sh:/start.sh
+      - ./sensor/sensor.py:/sensor.py
+      - ./sensor/DHT22.py:/DHT22.py
 
   telegraf:
-    image: telegraf:1.18-alpine
+    image: telegraf:latest
     volumes:
       - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
@@ -20,7 +23,7 @@ services:
       - '0.0.0.0:8125:8125/udp'
 
   influxdb:
-    image: influxdb:1.8-alpine
+    image: influxdb:1.8
     env_file: configuration.env
     ports:
       - '0.0.0.0:8086:8086'

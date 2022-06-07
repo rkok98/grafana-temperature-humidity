@@ -1,14 +1,12 @@
 import logging
 import signal
 import time
+from random import randint
 
-import pigpio
 from pyhap.accessory import Accessory
 from pyhap.accessory_driver import AccessoryDriver
 from pyhap.const import CATEGORY_SENSOR
 from telegraf.client import TelegrafClient
-
-import DHT22
 
 logging.basicConfig(level=logging.INFO, format="[%(module)s] %(message)s")
 
@@ -27,7 +25,7 @@ class AM2302(Accessory):
         self.char_humidity = serv_humidity \
             .get_characteristic('CurrentRelativeHumidity')
 
-        self.sensor = DHT22.sensor(pigpio.pi(), 4, LED=16, power=8)
+        self.sensor = "AAA"
 
     def __getstate__(self):
         state = super().__getstate__()
@@ -36,15 +34,15 @@ class AM2302(Accessory):
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.sensor = DHT22.sensor(pigpio.pi(), 4, LED=16, power=8)
+        self.sensor = "AAA"
 
     @Accessory.run_at_interval(3)
     def run(self):
-        self.sensor.trigger()
+        # self.sensor.trigger()
         time.sleep(0.2)
 
-        t = self.sensor.temperature()
-        h = self.sensor.humidity()
+        t = randint(16, 30)
+        h = randint(0, 100)
 
         client.metric('AM2302', {'temperature': t, 'humidity': h}, tags={'room': 'bedroom'})
 
@@ -53,8 +51,10 @@ class AM2302(Accessory):
 
 
 if __name__ == "__main__":
+    # Start
     client = TelegrafClient(host='0.0.0.0', port=8125)
 
+    # Start the accessory on port 51826
     accessory_driver = AccessoryDriver(port=51826)
     climate_sensor = AM2302(accessory_driver, 'Temperature and Humidity Sensor')
     accessory_driver.add_accessory(accessory=climate_sensor)

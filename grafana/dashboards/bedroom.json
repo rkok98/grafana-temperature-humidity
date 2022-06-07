@@ -29,7 +29,10 @@
   "liveNow": false,
   "panels": [
     {
-      "datasource": {},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -42,14 +45,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 6,
+            "fillOpacity": 16,
             "gradientMode": "hue",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "stepBefore",
+            "lineInterpolation": "smooth",
             "lineStyle": {
               "fill": "solid"
             },
@@ -59,7 +62,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -69,6 +72,8 @@
             }
           },
           "mappings": [],
+          "max": 35,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -77,7 +82,11 @@
                 "value": null
               },
               {
-                "color": "blue",
+                "color": "yellow",
+                "value": -50
+              },
+              {
+                "color": "green",
                 "value": 18
               },
               {
@@ -88,10 +97,64 @@
           },
           "unit": "celsius"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Inside"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Outside"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 8
+              },
+              {
+                "id": "custom.fillBelowTo",
+                "value": "Inside"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Inside"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "thresholds"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 10,
         "w": 24,
         "x": 0,
         "y": 0
@@ -111,14 +174,14 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single",
+          "mode": "multi",
           "sort": "none"
         }
       },
       "pluginVersion": "8.0.2",
       "targets": [
         {
-          "alias": "Temperature",
+          "alias": "Inside",
           "datasource": {
             "type": "influxdb",
             "uid": "vx6Q1rrnk"
@@ -127,7 +190,7 @@
           "measurement": "AM2302",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "Humidity",
+          "refId": "Inside",
           "resultFormat": "time_series",
           "select": [
             [
@@ -146,13 +209,60 @@
               "value": "bedroom"
             }
           ]
+        },
+        {
+          "alias": "Outside",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "weather",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"temperature\") FROM \"weather\" WHERE $timeFilter GROUP BY time($__interval) fill(linear)",
+          "rawQuery": false,
+          "refId": "Outside",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "main_temp"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
         }
       ],
-      "title": "Bedroom Temperature",
+      "title": "Temperature",
       "type": "timeseries"
     },
     {
-      "datasource": {},
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -165,14 +275,14 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 6,
+            "fillOpacity": 16,
             "gradientMode": "hue",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "stepBefore",
+            "lineInterpolation": "smooth",
             "lineStyle": {
               "fill": "solid"
             },
@@ -192,6 +302,8 @@
             }
           },
           "mappings": [],
+          "max": 100,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -211,16 +323,50 @@
           },
           "unit": "humidity"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Outside"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillBelowTo",
+                "value": "Inside"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Inside"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "thresholds",
+                  "seriesBy": "last"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 12,
+        "h": 10,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 10
       },
       "id": 4,
-      "interval": "",
       "links": [],
       "options": {
         "legend": {
@@ -234,23 +380,36 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single",
-          "sort": "none"
+          "mode": "multi",
+          "sort": "desc"
         }
       },
       "pluginVersion": "8.0.2",
       "targets": [
         {
-          "alias": "Humidity",
+          "alias": "Inside",
           "datasource": {
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "groupBy": [],
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
           "measurement": "AM2302",
           "orderByTime": "ASC",
           "policy": "default",
-          "refId": "Humidity",
+          "refId": "Inside",
           "resultFormat": "time_series",
           "select": [
             [
@@ -259,6 +418,10 @@
                   "humidity"
                 ],
                 "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
               }
             ]
           ],
@@ -269,9 +432,51 @@
               "value": "bedroom"
             }
           ]
+        },
+        {
+          "alias": "Outside",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "weather",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "Outside",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "main_humidity"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
         }
       ],
-      "title": "Bedroom Humidity",
+      "title": "Humidity",
       "type": "timeseries"
     }
   ],
@@ -283,7 +488,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -314,6 +519,6 @@
   "timezone": "",
   "title": "Bedroom",
   "uid": "1Mar-DTiz",
-  "version": 1,
+  "version": 3,
   "weekStart": "monday"
 }
