@@ -11,8 +11,6 @@ services:
       options:
         max-size: "10mb"
         max-file: "1"
-    networks:
-      - iot
 
   mosquitto:
     image: eclipse-mosquitto:1.6.13
