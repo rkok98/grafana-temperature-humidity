@@ -1,0 +1,8 @@
+# WIFI Setup
+ssid = ''
+password = ''
+
+# MQTT Setup
+mqtt_server = ''
+client_id = ''
+topic_pub = b'bedroom'

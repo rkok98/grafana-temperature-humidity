@@ -1,3 +1,6 @@
+### Project Specific ###
+config.py
+
 ### macOS ###
 # General
 .DS_Store
@@ -6,7 +9,6 @@
 
 # Icon must end with two \r
 Icon
-
 
 # Thumbnails
 ._*

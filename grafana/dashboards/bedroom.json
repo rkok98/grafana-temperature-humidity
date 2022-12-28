@@ -41,6 +41,8 @@
             "seriesBy": "last"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -68,7 +70,7 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "line"
+              "mode": "dashed"
             }
           },
           "mappings": [],
@@ -171,7 +173,8 @@
             "mean"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -184,12 +187,14 @@
           "alias": "Inside",
           "datasource": {
             "type": "influxdb",
-            "uid": "vx6Q1rrnk"
+            "uid": "P951FEA4DE68E13C5"
           },
           "groupBy": [],
-          "measurement": "AM2302",
+          "measurement": "dht22",
           "orderByTime": "ASC",
           "policy": "default",
+          "query": "SELECT distinct(\"temp\") FROM \"dht22\" WHERE (\"topic\" = 'bedroom') AND $timeFilter",
+          "rawQuery": false,
           "refId": "Inside",
           "resultFormat": "time_series",
           "select": [
@@ -202,13 +207,7 @@
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "room",
-              "operator": "=",
-              "value": "bedroom"
-            }
-          ]
+          "tags": []
         },
         {
           "alias": "Outside",
@@ -271,6 +270,8 @@
             "seriesBy": "last"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -377,7 +378,8 @@
             "mean"
           ],
           "displayMode": "table",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "multi",
@@ -392,21 +394,8 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "groupBy": [
-            {
-              "params": [
-                "$interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "previous"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "AM2302",
+          "groupBy": [],
+          "measurement": "dht22",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "Inside",
@@ -418,20 +407,10 @@
                   "humidity"
                 ],
                 "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "room",
-              "operator": "=",
-              "value": "bedroom"
-            }
-          ]
+          "tags": []
         },
         {
           "alias": "Outside",
@@ -481,14 +460,14 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 36,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {

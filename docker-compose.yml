@@ -1,15 +1,15 @@
 version: '3.6'
 services:
-  sensor:
-    build: ./sensor
-    network_mode: "host"
-    privileged: true
-    devices:
-      - /dev/gpiochip0
-    volumes:
-      - ./sensor/start.sh:/start.sh
-      - ./sensor/sensor.py:/sensor.py
-      - ./sensor/DHT22.py:/DHT22.py
+  mosquitto:
+    image: eclipse-mosquitto:1.6.13
+    restart: always
+    ports:
+      - '1883:1883'
+      - '9001:9001'
+    networks:
+      - iot
+    expose:
+      - '1883'
 
   telegraf:
     image: telegraf:latest
@@ -17,19 +17,25 @@ services:
       - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
       - influxdb
+      - mosquitto
     links:
       - influxdb
+      - mosquitto
     ports:
-      - '0.0.0.0:8125:8125/udp'
+      - '8125:8125/udp'
+    networks:
+      - iot
 
   influxdb:
     image: influxdb:1.8
     env_file: configuration.env
     ports:
-      - '0.0.0.0:8086:8086'
+      - '8086:8086'
     volumes:
       - ./:/imports
       - influxdb_data:/var/lib/influxdb
+    networks:
+      - iot
 
   grafana:
     image: grafana/grafana:latest
@@ -39,13 +45,18 @@ services:
     links:
       - influxdb
     ports:
-      - '0.0.0.0:3000:3000'
+      - '3000:3000'
     expose:
       - '3000'
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
       - ./grafana/dashboards/:/var/lib/grafana/dashboards/
+    networks:
+      - iot
+
+networks:
+  iot:
 
 volumes:
   grafana_data: { }
