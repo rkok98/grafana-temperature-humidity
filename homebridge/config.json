@@ -1,0 +1,44 @@
+{
+    "bridge": {
+        "name": "Homebridge 8BC0",
+        "username": "0E:39:3C:99:8B:C0",
+        "port": 51396,
+        "pin": "883-53-909",
+        "advertiser": "bonjour-hap"
+    },
+    "accessories": [
+        {
+            "type": "temperatureSensor",
+            "name": "Slaapkamer Temperatuur",
+            "url": "mqtt://0.0.0.0:1883",
+            "logMqtt": false,
+            "accessory": "mqttthing",
+            "topics": {
+                "getCurrentTemperature": {
+                    "topic": "telegraf/dht22",
+                    "apply": "return JSON.parse(message).fields.temperature;"
+                }
+            }
+        },
+        {
+            "type": "humiditySensor",
+            "name": "Slaapkamer Luchtvochtigheid",
+            "logMqtt": false,
+            "url": "mqtt://0.0.0.0:1883",
+            "accessory": "mqttthing",
+            "topics": {
+                "getCurrentRelativeHumidity": {
+                    "topic": "telegraf/dht22",
+                    "apply": "return JSON.parse(message).fields.humidity;"
+                }
+            }
+        }
+    ],
+    "platforms": [
+        {
+            "name": "Config",
+            "port": 8581,
+            "platform": "config"
+        }
+    ]
+}

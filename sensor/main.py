@@ -32,7 +32,7 @@ last_message = 0
 
 while True:
     try:
-        if (time.time() - last_message) > 0.2:
+        if (time.time() - last_message) > 10:
             sensor.measure()
             temp = sensor.temperature()
             hum = sensor.humidity()
